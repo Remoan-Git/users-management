@@ -50,18 +50,24 @@ const UpdateUser = () => {
     }
 
     try {
-      const response = await axios.put(
-        `https://jsonplaceholder.typicode.com/users/${formData.userId}`,
-        {
-          name: formData.name,
-          username: formData.username,
-          email: formData.email,
-          phone: formData.phone,
-          website: formData.website,
-        }
-      );
+      if (formData.userId <= 10) {
+        const response = await axios.put(
+          `https://jsonplaceholder.typicode.com/users/${formData.userId}`,
+          {
+            name: formData.name,
+            username: formData.username,
+            email: formData.email,
+            phone: formData.phone,
+            website: formData.website,
+          }
+        );
+        dispatch({ type: "UPDATE_USER", payload: response.data });
+      } else {
+        const modifiedData = { ...formData, id: parseInt(formData.userId) };
+        delete modifiedData.userId;
 
-      dispatch({ type: "UPDATE_USER", payload: response.data });
+        dispatch({ type: "UPDATE_USER", payload: modifiedData });
+      }
 
       setFormData({
         userId: "",
@@ -72,7 +78,6 @@ const UpdateUser = () => {
         website: "",
       });
 
-   
       setErrors({});
 
       setIsSubmitting(false);
